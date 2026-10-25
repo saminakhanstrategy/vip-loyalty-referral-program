@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA Botanicals | VIP Loyalty & Referral Program Widget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        botanical: {
+                            50: '#F4F7F4',
+                            100: '#E3EBE3',
+                            200: '#C7D7C7',
+                            300: '#A3BFA3',
+                            700: '#2D4A3E',
+                            800: '#1F352C',
+                            900: '#13231D',
+                        },
+                        amber: {
+                            400: '#F59E0B',
+                            500: '#D97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0F1715; color: #E2E8F0; }
+
+        .glass-card {
+            background: rgba(19, 35, 29, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(163, 191, 163, 0.2);
+        }
+
+        .gold-glow-text {
+            background: linear-gradient(135deg, #FFF 0%, #F59E0B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-botanical {
+            background: linear-gradient(135deg, #2D4A3E 0%, #1F352C 100%);
+            border: 1px solid rgba(163, 191, 163, 0.4);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-botanical:hover {
+            border-color: #A3BFA3;
+            box-shadow: 0 0 15px rgba(163, 191, 163, 0.3);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-botanical-300 selection:text-botanical-900 pb-20">
+
+    <!-- DEMO TESTER CONTROL TOOLBAR (Portfolio Preset Switcher) -->
+    <header class="sticky top-0 z-50 bg-botanical-900/95 border-b border-botanical-300/30 backdrop-blur-md px-4 py-3 shadow-xl">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono">
+            <div class="flex items-center space-x-2 text-botanical-200">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                <span class="font-bold tracking-wider uppercase text-white">CRO Portfolio Demo:</span>
+                <span class="hidden sm:inline text-slate-400">VIP Loyalty & Referral Growth Engine</span>
+            </div>
+
+            <!-- One-Click Preset Tier Simulator -->
+            <div class="flex items-center flex-wrap gap-2">
+                <span class="text-slate-400 text-[10px] uppercase font-bold mr-1">Simulate Tier:</span>
+                <button onclick="simulateTier('member')" class="px-2.5 py-1 bg-botanical-700/60 hover:bg-botanical-700 border border-botanical-300/30 rounded text-botanical-100 transition">
+                    Tier 1: Member (0 Pts)
+                </button>
+                <button onclick="simulateTier('vip')" class="px-2.5 py-1 bg-botanical-700/60 hover:bg-botanical-700 border border-botanical-300/30 rounded text-botanical-100 transition">
+                    Tier 2: Gold VIP (450 Pts)
+                </button>
+                <button onclick="simulateTier('elite')" class="px-2.5 py-1 bg-amber-950/60 hover:bg-amber-900 border border-amber-500/30 rounded text-amber-200 transition">
+                    Tier 3: Platinum Elite (1,200 Pts)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-12">
+
+        <!-- WIDGET HEADER HERO -->
+        <div class="text-center space-y-3 max-w-2xl mx-auto">
+            <span class="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
+                AURA Botanical Club
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                Earn Rewards & Give $15, Get $15
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                Join our botanical rewards program to unlock exclusive discounts, early product drops, and seamless referral credits for you and your friends.
+            </p>
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- CORE WIDGET CONTAINER -->
+        <!-- ========================================================= -->
+        <div class="glass-card rounded-3xl p-6 sm:p-10 border border-botanical-300/30 space-y-10 shadow-2xl">
+            
+            <!-- USER STATUS & TIER PROGRESSION BANNER -->
+            <div class="bg-botanical-900/90 border border-botanical-300/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 font-mono">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl font-bold shadow-inner">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div>
+                        <span id="userTierBadge" class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                            Gold VIP Tier
+                        </span>
+                        <h3 id="userNameDisplay" class="text-xl font-bold text-white mt-1">Welcome back, Sarah!</h3>
+                        <p id="userPointsDisplay" class="text-xs text-slate-400 font-sans mt-0.5">You have <strong class="text-amber-400 font-mono">450 AURA Points</strong> available ($45.00 value).</p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-auto text-right space-y-2">
+                    <div class="text-xs text-slate-400 flex justify-between md:justify-end space-x-4">
+                        <span>Progress to Platinum Elite</span>
+                        <span id="tierProgressText" class="text-amber-400 font-bold">450 / 1,000 Pts</span>
+                    </div>
+                    <div class="w-full md:w-56 bg-botanical-950 h-2.5 rounded-full overflow-hidden border border-botanical-300/20">
+                        <div id="tierProgressBar" class="bg-gradient-to-r from-amber-500 to-amber-300 h-full w-[45%] transition-all duration-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS NAVIGATION -->
+            <div class="flex border-b border-botanical-300/20 font-mono text-xs font-bold">
+                <button onclick="switchTab('rewards')" id="tabBtnRewards" class="flex-1 py-4 text-center border-b-2 border-amber-400 text-amber-400 transition uppercase tracking-wider flex items-center justify-center space-x-2">
+                    <i class="fas fa-gift"></i>
+                    <span>Redeem Rewards</span>
+                </button>
+                <button onclick="switchTab('referral')" id="tabBtnReferral" class="flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 hover:text-white transition uppercase tracking-wider flex items-center justify-center space-x-2">
+                    <i class="fas fa-share-nodes"></i>
+                    <span>Refer Friends ($15)</span>
+                </button>
+                <button onclick="switchTab('earn')" id="tabBtnEarn" class="flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 hover:text-white transition uppercase tracking-wider flex items-center justify-center space-x-2">
+                    <i class="fas fa-bolt"></i>
+                    <span>Ways to Earn</span>
+                </button>
+            </div>
+
+
+            <!-- TAB CONTENT 1: REDEEM REWARDS -->
+            <div id="tabContentRewards" class="space-y-6">
+                <div class="flex justify-between items-center font-mono text-xs">
+                    <span class="text-slate-400 uppercase tracking-wider font-bold">Available Perks & Discounts</span>
+                    <span class="text-amber-400 font-bold">Instant Checkout Application</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
+                    <!-- Reward Card 1 -->
+                    <div class="bg-botanical-900/60 border border-botanical-300/20 hover:border-amber-400/50 p-5 rounded-2xl flex flex-col justify-between space-y-4 transition">
+                        <div class="space-y-2">
+                            <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded uppercase">100 Points</span>
+                            <h3 class="text-white font-bold text-base">$10 Off Any Order</h3>
+                            <p class="text-xs text-slate-400 font-sans font-light">Apply instantly at checkout as a direct cash-equivalent discount.</p>
+                        </div>
+                        <button onclick="redeemReward(100, '$10 Off Coupon')" class="w-full py-2.5 bg-botanical-700 hover:bg-botanical-800 text-white font-bold text-xs rounded-xl uppercase tracking-wider transition border border-botanical-300/30">
+                            Redeem (100 Pts)
+                        </button>
+                    </div>
+
+                    <!-- Reward Card 2 -->
+                    <div class="bg-botanical-900/60 border border-botanical-300/20 hover:border-amber-400/50 p-5 rounded-2xl flex flex-col justify-between space-y-4 transition">
+                        <div class="space-y-2">
+                            <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded uppercase">250 Points</span>
+                            <h3 class="text-white font-bold text-base">Free Botanical Serum</h3>
+                            <p class="text-xs text-slate-400 font-sans font-light">Redeem your points for a full-size complimentary Radiance Serum bottle.</p>
+                        </div>
+                        <button onclick="redeemReward(250, 'Free Botanical Serum')" class="w-full py-2.5 bg-botanical-700 hover:bg-botanical-800 text-white font-bold text-xs rounded-xl uppercase tracking-wider transition border border-botanical-300/30">
+                            Redeem (250 Pts)
+                        </button>
+                    </div>
+
+                    <!-- Reward Card 3 -->
+                    <div class="bg-botanical-900/60 border border-botanical-300/20 hover:border-amber-400/50 p-5 rounded-2xl flex flex-col justify-between space-y-4 transition">
+                        <div class="space-y-2">
+                            <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded uppercase">500 Points</span>
+                            <h3 class="text-white font-bold text-base">$50 Store Credit</h3>
+                            <p class="text-xs text-slate-400 font-sans font-light">Load $50 directly into your customer account wallet for future orders.</p>
+                        </div>
+                        <button onclick="redeemReward(500, '$50 Store Credit')" class="w-full py-2.5 bg-botanical-700 hover:bg-botanical-800 text-white font-bold text-xs rounded-xl uppercase tracking-wider transition border border-botanical-300/30">
+                            Redeem (500 Pts)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- TAB CONTENT 2: REFERRAL PROGRAM (GIVE $15, GET $15) -->
+            <div id="tabContentReferral" class="hidden space-y-6">
+                <div class="bg-botanical-900/90 border border-amber-500/30 rounded-2xl p-6 sm:p-8 text-center space-y-6 font-mono">
+                    <div class="space-y-2 max-w-lg mx-auto">
+                        <h3 class="text-2xl font-extrabold text-white">Give $15, Get $15</h3>
+                        <p class="text-xs text-slate-400 font-sans">Share your personal referral link with friends. They get $15 off their first order, and you earn $15 in points once they complete a purchase.</p>
+                    </div>
+
+                    <!-- Referral Link Box -->
+                    <div class="max-w-md mx-auto bg-botanical-950 border border-botanical-300/30 p-2.5 rounded-xl flex items-center justify-between space-x-3">
+                        <span id="referralLinkText" class="text-xs text-amber-400 font-mono truncate pl-2">
+                            https://aurabotanicals.com/ref/sarah-vip-92
+                        </span>
+                        <button onclick="copyReferralLink()" id="copyRefBtn" class="bg-amber-500 hover:bg-amber-400 text-botanical-950 font-bold text-xs px-4 py-2 rounded-lg transition shrink-0 uppercase">
+                            Copy Link
+                        </button>
+                    </div>
+
+                    <!-- Social Share Options -->
+                    <div class="flex items-center justify-center space-x-3 pt-2">
+                        <button onclick="alert('Opening WhatsApp referral share...')" class="px-4 py-2 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition flex items-center space-x-2">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp</span>
+                        </button>
+                        <button onclick="alert('Opening Email referral draft...')" class="px-4 py-2 bg-indigo-600/80 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition flex items-center space-x-2">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email Invite</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- TAB CONTENT 3: WAYS TO EARN POINTS -->
+            <div id="tabContentEarn" class="hidden space-y-4 font-mono">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-botanical-900/60 p-4 rounded-xl border border-botanical-300/20 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-botanical-800 flex items-center justify-center text-amber-400 text-base">
+                                <i class="fas fa-bag-shopping"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white">Make a Purchase</p>
+                                <p class="text-[11px] text-slate-400">Earn 5 points for every $1 spent</p>
+                            </div>
+                        </div>
+                        <span class="text-emerald-400 font-bold">+5 Pts / $1</span>
+                    </div>
+
+                    <div class="bg-botanical-900/60 p-4 rounded-xl border border-botanical-300/20 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-botanical-800 flex items-center justify-center text-amber-400 text-base">
+                                <i class="fas fa-instagram"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white">Follow on Instagram</p>
+                                <p class="text-[11px] text-slate-400">Connect your social account</p>
+                            </div>
+                        </div>
+                        <span class="text-emerald-400 font-bold">+50 Pts</span>
+                    </div>
+
+                    <div class="bg-botanical-900/60 p-4 rounded-xl border border-botanical-300/20 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-botanical-800 flex items-center justify-center text-amber-400 text-base">
+                                <i class="fas fa-cake-candles"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white">Birthday Bonus</p>
+                                <p class="text-[11px] text-slate-400">Receive points on your special day</p>
+                            </div>
+                        </div>
+                        <span class="text-emerald-400 font-bold">+200 Pts</span>
+                    </div>
+
+                    <div class="bg-botanical-900/60 p-4 rounded-xl border border-botanical-300/20 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-botanical-800 flex items-center justify-center text-amber-400 text-base">
+                                <i class="fas fa-pen-nib"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white">Leave a Product Review</p>
+                                <p class="text-[11px] text-slate-400">With photo upload</p>
+                            </div>
+                        </div>
+                        <span class="text-emerald-400 font-bold">+100 Pts</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- ========================================================= -->
+
+
+        <!-- CRO & GROWTH CASE STUDY BREAKDOWN PANEL -->
+        <section class="glass-card rounded-3xl p-6 sm:p-8 space-y-6 border border-botanical-300/20">
+            <div class="flex items-center space-x-3 border-b border-botanical-300/10 pb-4">
+                <div class="w-10 h-10 rounded-xl bg-botanical-700/60 border border-botanical-300/30 flex items-center justify-center text-amber-400">
+                    <i class="fas fa-chart-line text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-white">CRO Case Study: Customer Lifetime Value (LTV) & Referral Loops</h2>
+                    <p class="text-xs text-slate-400 font-mono">Strategic analysis of organic acquisition and retention mechanics</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+                <div class="bg-botanical-900/60 p-5 rounded-2xl border border-botanical-300/10 space-y-2">
+                    <span class="text-amber-400 font-bold uppercase tracking-wider block">1. Organic CAC Reduction</span>
+                    <h3 class="text-white font-bold text-sm">Viral Referral Loops</h3>
+                    <p class="text-slate-400 font-sans leading-relaxed text-[11px]">
+                        Incentivizing existing buyers with a "Give $15, Get $15" mechanism turns your customer base into an active acquisition channel, lowering reliance on paid ad networks.
+                    </p>
+                </div>
+
+                <div class="bg-botanical-900/60 p-5 rounded-2xl border border-botanical-300/10 space-y-2">
+                    <span class="text-emerald-400 font-bold uppercase tracking-wider block">2. Repeat Purchase Frequency</span>
+                    <h3 class="text-white font-bold text-sm">Point Accumulation Psychology</h3>
+                    <p class="text-slate-400 font-sans leading-relaxed text-[11px]">
+                        Visible point balances create a "sunk cost" psychological incentive, driving repeat orders to reach the next reward milestone or VIP tier.
+                    </p>
+                </div>
+
+                <div class="bg-botanical-900/60 p-5 rounded-2xl border border-botanical-300/10 space-y-2">
+                    <span class="text-botanical-300 font-bold uppercase tracking-wider block">3. VIP Tier Exclusivity</span>
+                    <h3 class="text-white font-bold text-sm">Customer Retention Boost</h3>
+                    <p class="text-slate-400 font-sans leading-relaxed text-[11px]">
+                        Segmenting buyers into Member, Gold, and Platinum tiers engenders brand loyalty and increases average order value (AOV) among high-tier patrons.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        let currentPoints = 450;
+        let currentTier = 'vip';
+
+        // Tab Switcher
+        function switchTab(tabName) {
+            document.getElementById('tabContentRewards').classList.add('hidden');
+            document.getElementById('tabContentReferral').classList.add('hidden');
+            document.getElementById('tabContentEarn').classList.add('hidden');
+
+            document.getElementById('tabBtnRewards').className = "flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 hover:text-white transition uppercase tracking-wider flex items-center justify-center space-x-2";
+            document.getElementById('tabBtnReferral').className = "flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 hover:text-white transition uppercase tracking-wider flex items-center justify-center space-x-2";
+            document.getElementById('tabBtnEarn').className = "flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 hover:text-white transition uppercase tracking-wider flex items-center justify-center space-x-2";
+
+            if (tabName === 'rewards') {
+                document.getElementById('tabContentRewards').classList.remove('hidden');
+                document.getElementById('tabBtnRewards').className = "flex-1 py-4 text-center border-b-2 border-amber-400 text-amber-400 transition uppercase tracking-wider flex items-center justify-center space-x-2";
+            } else if (tabName === 'referral') {
+                document.getElementById('tabContentReferral').classList.remove('hidden');
+                document.getElementById('tabBtnReferral').className = "flex-1 py-4 text-center border-b-2 border-amber-400 text-amber-400 transition uppercase tracking-wider flex items-center justify-center space-x-2";
+            } else if (tabName === 'earn') {
+                document.getElementById('tabContentEarn').classList.remove('hidden');
+                document.getElementById('tabBtnEarn').className = "flex-1 py-4 text-center border-b-2 border-amber-400 text-amber-400 transition uppercase tracking-wider flex items-center justify-center space-x-2";
+            }
+        }
+
+        // Simulate User Tiers for Reviewers
+        function simulateTier(tierKey) {
+            const badge = document.getElementById('userTierBadge');
+            const nameDisp = document.getElementById('userNameDisplay');
+            const pointsDisp = document.getElementById('userPointsDisplay');
+            const progressText = document.getElementById('tierProgressText');
+            const progressBar = document.getElementById('tierProgressBar');
+
+            if (tierKey === 'member') {
+                currentPoints = 0;
+                badge.innerText = 'Tier 1: Member';
+                nameDisp.innerText = 'Welcome, Alex!';
+                pointsDisp.innerHTML = `You have <strong class="text-amber-400 font-mono">0 AURA Points</strong> available.`;
+                progressText.innerText = '0 / 250 Pts';
+                progressBar.style.width = '0%';
+            } else if (tierKey === 'vip') {
+                currentPoints = 450;
+                badge.innerText = 'Tier 2: Gold VIP';
+                nameDisp.innerText = 'Welcome back, Sarah!';
+                pointsDisp.innerHTML = `You have <strong class="text-amber-400 font-mono">450 AURA Points</strong> available ($45.00 value).`;
+                progressText.innerText = '450 / 1,000 Pts';
+                progressBar.style.width = '45%';
+            } else if (tierKey === 'elite') {
+                currentPoints = 1200;
+                badge.innerText = 'Tier 3: Platinum Elite';
+                nameDisp.innerText = 'Welcome back, Elena (Elite VIP)!';
+                pointsDisp.innerHTML = `You have <strong class="text-amber-400 font-mono">1,200 AURA Points</strong> available ($120.00 value).`;
+                progressText.innerText = 'MAX TIER REACHED';
+                progressBar.style.width = '100%';
+            }
+        }
+
+        // Redeem Reward Action
+        function redeemReward(cost, rewardName) {
+            if (currentPoints < cost) {
+                alert(`Insufficient points! You need ${cost} points to redeem "${rewardName}". Complete tasks to earn more.`);
+                return;
+            }
+            currentPoints -= cost;
+            document.getElementById('userPointsDisplay').innerHTML = `You have <strong class="text-amber-400 font-mono">${currentPoints} AURA Points</strong> available.`;
+            alert(`Successfully redeemed "${rewardName}"! Your discount code has been applied to your session.`);
+        }
+
+        // Copy Referral Link
+        function copyReferralLink() {
+            const linkText = document.getElementById('referralLinkText').innerText;
+            navigator.clipboard.writeText(linkText);
+            const btn = document.getElementById('copyRefBtn');
+            btn.innerText = 'COPIED!';
+            setTimeout(() => {
+                btn.innerText = 'Copy Link';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
